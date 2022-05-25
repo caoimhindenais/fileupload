@@ -12,6 +12,11 @@ apache-tomee-8.0.11-webprofile.zip
 dd bs=1024 count=1048576 </dev/urandom > file.data
 ```
 
+##### Build
+
+```
+mvn clean install
+```
 
 #### Spring
 
