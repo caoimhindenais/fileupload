@@ -1,0 +1,56 @@
+#### TOMEE
+
+- Download the webprofile from https://tomee.apache.org/download.html
+apache-tomee-8.0.11-webprofile.zip
+- unzip apache-tomee-8.0.11-webprofile.zip
+- chmod u+x apache-tomee-webprofile-8.0.11/bin/*
+- ./apache-tomee-webprofile-8.0.11/bin/startup.sh
+
+##### Generate Random 1 GB file
+
+```
+dd bs=1024 count=1048576 </dev/urandom > file.data
+```
+
+
+#### Spring
+
+
+```
+
+cd  spring/target && java -jar spring/target/uploading-files-spring-1.0.jar
+
+curl -v -i -X POST -H "Content-Type: multipart/form-data"  -F "file=@file.data" "localhost:8090/spring/?file=file.data"
+```
+
+#### JEE
+
+```
+
+cp jee/target/jee.war apache-tomee-webprofile-8.0.11/webapps
+
+curl -v -i -X POST -H "Content-Type: multipart/form-data"  -F "file=@file.data" "http://localhost:8080/jee/api/?file=file.data"
+
+```
+
+#### RESULTS
+
+```
+find . -name file.data -exec sha256sum {} \;
+
+a01a9c53b1b7be0648f2a81f34f704963761a9e94d5531a17638672afff97407  ./file.data
+0d7ca4d63f5e62c8f2e9f726d550b9ed8be02f784e24e82418ca261fd30da844  ./apache-tomee-webprofile-8.0.11/file.data
+a01a9c53b1b7be0648f2a81f34f704963761a9e94d5531a17638672afff97407  ./spring/target/file.data
+
+find . -name file.data -exec ls -artl {} \;
+
+-rw-r--r--  1 kevin  staff  1073741824 May 25 20:55 ./file.data
+-rw-r-----  1 kevin  staff  1073742025 May 25 21:01 ./apache-tomee-webprofile-8.0.11/file.data
+-rw-r--r--  1 kevin  staff  1073741824 May 25 21:01 ./spring/target/file.data
+
+```
+
+WARNING: TOMEE seems to have stuck some extra characters on to the end of the file?
+
+
+
